@@ -6,7 +6,7 @@ export type DigestStatus = 'ok' | 'retry' | 'fail';
 // One row per job in a night's run log.
 export type DigestRow = {
   job: string;
-  // null when the log has no owner for the job; views show it as "—" (styleguide).
+  // Owner of the job's most recent line that had one. null when no line did; views show it as "—" (styleguide).
   owner: string | null;
   // Every log line for the job, retries and failures included.
   runs: number;
