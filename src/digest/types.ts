@@ -25,6 +25,8 @@ export type Night = {
   // Sorted by job (plain string order). The page and the JSON both render this order as is,
   // so they cannot disagree (ADR 0001).
   rows: DigestRow[];
+  // Valid log lines per status over the whole night (what the status board shows beside a night).
+  counts: Record<DigestStatus, number>;
   // Lines that did not parse or did not have the log's shape. Counted, never thrown.
   badLines: number;
 };

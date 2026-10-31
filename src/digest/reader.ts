@@ -42,6 +42,7 @@ export const readNight: ReadNight = (runsDir, night): Night | null => {
   }
 
   const rows = new Map<string, DigestRow>();
+  const counts: Record<DigestStatus, number> = { ok: 0, retry: 0, fail: 0 };
   let badLines = 0;
 
   for (const line of text.split('\n')) {
@@ -51,6 +52,7 @@ export const readNight: ReadNight = (runsDir, night): Night | null => {
       badLines += 1;
       continue;
     }
+    counts[e.status] += 1;
     const row = rows.get(e.job);
     if (!row) {
       rows.set(e.job, {
@@ -73,5 +75,5 @@ export const readNight: ReadNight = (runsDir, night): Night | null => {
     if (e.owner !== null) row.owner = e.owner;
   }
 
-  return { rows: [...rows.values()].sort(byJob), badLines };
+  return { rows: [...rows.values()].sort(byJob), counts, badLines };
 };

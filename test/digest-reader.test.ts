@@ -25,6 +25,10 @@ describe('readNight on runs/2026-10-28.jsonl', () => {
     expect(night!.badLines).toBe(1);
   });
 
+  it('counts valid lines per status', () => {
+    expect(night!.counts).toEqual({ ok: 10, retry: 4, fail: 1 });
+  });
+
   it('keeps the row of a job with a null owner', () => {
     const row = night!.rows.find((r) => r.job === 'digest/render')!;
     expect(row.owner).toBeNull();
@@ -63,7 +67,7 @@ describe('readNight edge cases', () => {
 
   it('renders an empty file as no rows', () => {
     const dir = tempRuns({ '2026-02-01.jsonl': '' });
-    expect(readNight(dir, '2026-02-01')).toEqual({ rows: [], badLines: 0 });
+    expect(readNight(dir, '2026-02-01')).toEqual({ rows: [], counts: { ok: 0, retry: 0, fail: 0 }, badLines: 0 });
   });
 
   it('counts lines that parse but have the wrong shape, and skips blank lines', () => {
