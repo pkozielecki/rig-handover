@@ -27,9 +27,15 @@ function tempRuns(files: Record<string, string>): string {
   return dir;
 }
 
+// Where the job's cell starts. A flagged row has "⚠ " in front of the job name.
+function jobCellAt(html: string, job: string): number {
+  const plain = html.indexOf(`>${job}<`);
+  return plain >= 0 ? plain : html.indexOf(`>⚠ ${job}<`);
+}
+
 // The table row (<tr>...</tr>) that holds the job's cell.
 function rowHtml(html: string, job: string): string {
-  const at = html.indexOf(`>${job}<`);
+  const at = jobCellAt(html, job);
   if (at === -1) throw new Error(`no row for ${job} in page`);
   const start = html.lastIndexOf('<tr', at);
   const end = html.indexOf('</tr>', at);
@@ -39,7 +45,7 @@ function rowHtml(html: string, job: string): string {
 // The listed jobs, in the order they appear on the page.
 function pageJobOrder(html: string, jobs: string[]): string[] {
   return jobs
-    .map((job) => ({ job, at: html.indexOf(`>${job}<`) }))
+    .map((job) => ({ job, at: jobCellAt(html, job) }))
     .filter((x) => x.at >= 0)
     .sort((a, b) => a.at - b.at)
     .map((x) => x.job);
